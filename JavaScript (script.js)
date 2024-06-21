@@ -1,0 +1,112 @@
+const form = document.getElementById('contact-form');
+const nameInput = document.getElementById('name');
+const surnameInput = document.getElementById('surname');
+const emailInput = document.getElementById('email');
+const phoneInput = document.getElementById('phone');
+const messageInput = document.getElementById('message');
+const nameError = document.getElementById('name-error');
+const surnameError = document.getElementById('surname-error');
+const emailError = document.getElementById('email-error');
+const phoneError = document.getElementById('phone-error');
+const messageError = document.getElementById('message-error');
+const responseDiv = document.getElementById('response');
+
+function validateName(name) {
+  if (name.trim() === '') {
+    nameError.textContent = 'Пожалуйста, введите имя';
+    return false;
+  } else if (!/^[a-zA-Zа-яА-Я]+$/.test(name)) {
+    nameError.textContent = 'Имя должно состоять только из букв';
+    return false;
+  } else {
+    nameError.textContent = '';
+    return true;
+  }
+}
+
+function validateSurname(surname) {
+  if (surname.trim() === '') {
+    surnameError.textContent = 'Пожалуйста, введите фамилию';
+    return false;
+  } else if (!/^[a-zA-Zа-яА-Я]+$/.test(surname)) {
+    surnameError.textContent = 'Фамилия должна состоять только из букв';
+    return false;
+  } else {
+    surnameError.textContent = '';
+    return true;
+  }
+}
+
+function validateEmail(email) {
+  if (email.trim() === '') {
+    emailError.textContent = 'Пожалуйста, введите email';
+    return false;
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    emailError.textContent = 'Неверный формат email';
+    return false;
+  } else {
+    emailError.textContent = '';
+    return true;
+  }
+}
+
+function validatePhone(phone) {
+  if (phone.trim() === '') {
+    phoneError.textContent = 'Пожалуйста, введите номер телефона';
+    return false;
+  } else if (!/^\+?\d{10,15}$/.test(phone)) {
+    phoneError.textContent = 'Неверный формат номера телефона';
+    return false;
+  } else {
+    phoneError.textContent = '';
+    return true;
+  }
+}
+
+function validateMessage(message) {
+  if (message.trim() === '') {
+    messageError.textContent = 'Пожалуйста, введите сообщение';
+    return false;
+  } else {
+    messageError.textContent = '';
+    return true;
+  }
+}
+
+nameInput.addEventListener('input', () => validateName(nameInput.value));
+surnameInput.addEventListener('input', () => validateSurname(surnameInput.value));
+emailInput.addEventListener('input', () => validateEmail(emailInput.value));
+phoneInput.addEventListener('input', () => validatePhone(phoneInput.value));
+messageInput.addEventListener('input', () => validateMessage(messageInput.value));
+
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  if (validateName(nameInput.value) &&
+      validateSurname(surnameInput.value) &&
+      validateEmail(emailInput.value) &&
+      validatePhone(phoneInput.value) &&
+      validateMessage(messageInput.value)) {
+
+    const formData = new FormData(form);
+
+    
+    const endpoint = 'https://example.com/api/submit-form'; 
+
+    fetch(endpoint, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (response.ok) {
+        responseDiv.textContent = 'Форма отправлена успешно!';
+      } else {
+        responseDiv.textContent = 'Ошибка при отправке формы.';
+      }
+    })
+    .catch(error => {
+      responseDiv.textContent = 'Ошибка при отправке формы.';
+    });
+  }
+});
